@@ -3,16 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
 	rediscache "test-app/cache/redis"
 	"test-app/config"
+	app "test-app/container"
 	"test-app/storage/postgres"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	run()
-
+	err := run()
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func run() error {
@@ -33,7 +38,7 @@ func run() error {
 	}
 
 	// initializing Postgres database storage
-	db, err := postgres.NewPostgresStorage(
+	storage, err := postgres.NewPostgresStorage(
 		cfg.Postgres.Host,
 		cfg.Postgres.User,
 		cfg.Postgres.DBName,
@@ -44,8 +49,25 @@ func run() error {
 		return fmt.Errorf("cannot initialize db: %w", err)
 	}
 
-	_ = cache
-	_ = db
+	// putting all together to container
+	app := app.NewApp(storage, cache)
+
+	// initializing routing
+	router := http.NewServeMux()
+	router.HandleFunc("/", app.GetStats)
+
+	// initializing HTTP server
+	srv := &http.Server{
+		Addr:        cfg.HTTPServer.Addr,
+		ReadTimeout: cfg.HTTPServer.ReadTimeout,
+		IdleTimeout: cfg.HTTPServer.IdleTimeout,
+		Handler:     router,
+	}
+
+	err = srv.ListenAndServe()
+	if err != nil {
+		return fmt.Errorf("cannot run HTTP server: %w", err)
+	}
 
 	return nil
 }

@@ -9,7 +9,7 @@ redis:
 postgres:
   host: "localhost" 
   user: "postgres"
-  password: "test"
+  password: "postgres"
   db_name: "postgres"
   ssl_mode: "disable"
   port: 5432
