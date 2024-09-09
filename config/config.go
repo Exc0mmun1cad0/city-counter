@@ -17,7 +17,7 @@ type Config struct {
 // HTTP server configuration
 type HTTPServer struct {
 	Addr        string        `yaml:"addr" env-default:"localhost:8080"`
-	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+	ReadTimeout time.Duration `yaml:"read_timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 }
 
@@ -40,7 +40,7 @@ func MustLoad() *Config {
 			log.Fatal("CONFIG_PATH is not set")
 		}
 
-		if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		if _, err := os.Stat(configPath); !os.IsNotExist(err) {
 			log.Fatalf("config file doesn't exist: %s", err)
 		}
 

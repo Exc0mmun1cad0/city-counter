@@ -1,0 +1,8 @@
+http_server:
+  addr: "localhost:8081"
+  timeout: 4s
+  idle_time: 6s
+redis:
+  addr: "localhost:6379"
+  # password: ""
+  "db": 0
