@@ -11,11 +11,11 @@ type PostgresStorage struct {
 	db *sql.DB
 }
 
-func NewPostgresStorage(user, dbname, password, sslmode string) (*PostgresStorage, error) {
+func NewPostgresStorage(host, user, dbname, password, sslmode string) (*PostgresStorage, error) {
 	// constructing connection string
 	connStr := fmt.Sprintf(
-		"user=%s dbname=%s password=%s sslmode=%s",
-		user, dbname, password, sslmode,
+		"host=%s user=%s dbname=%s password=%s sslmode=%s",
+		host, user, dbname, password, sslmode,
 	)
 
 	// connecting to Postgres
