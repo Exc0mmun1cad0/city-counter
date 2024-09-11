@@ -40,6 +40,7 @@ func run() error {
 	// initializing Postgres database storage
 	storage, err := postgres.NewPostgresStorage(
 		cfg.Postgres.Host,
+		cfg.Postgres.Port,
 		cfg.Postgres.User,
 		cfg.Postgres.DBName,
 		cfg.Postgres.Password,

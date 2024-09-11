@@ -11,11 +11,11 @@ type PostgresStorage struct {
 	db *sql.DB
 }
 
-func NewPostgresStorage(host, user, dbname, password, sslmode string) (*PostgresStorage, error) {
+func NewPostgresStorage(host, port, user, dbname, password, sslmode string) (*PostgresStorage, error) {
 	// constructing connection string
 	connStr := fmt.Sprintf(
-		"host=%s user=%s dbname=%s password=%s sslmode=%s",
-		host, user, dbname, password, sslmode,
+		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+		host, port, user, dbname, password, sslmode,
 	)
 
 	// connecting to Postgres
@@ -35,14 +35,14 @@ func NewPostgresStorage(host, user, dbname, password, sslmode string) (*Postgres
 }
 
 func (pg *PostgresStorage) CountCitiesInCountry(countryCode string) (int, error) {
-	query := `SELECT COUNT(*) from city WHERE countrycode = '%s'`
+	query := `SELECT COUNT(*) from city WHERE countrycode = $1;`
 
 	// executing query to db
 	row, err := pg.db.Query(query, countryCode)
 	if err != nil {
 		return 0, fmt.Errorf("cannot execute sql query: %w", err)
 	}
-
+	row.Next()
 	// extracting result from table (first and only one row)
 	var cnt int
 	if err := row.Scan(&cnt); err != nil {
