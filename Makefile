@@ -10,3 +10,6 @@ postgres-dump:
 	@docker exec -ti db psql -U postgres -f data.sql
 postgres-down:
 	@docker stop db && docker rm db
+
+run:
+	@./cmd/api/run.sh
