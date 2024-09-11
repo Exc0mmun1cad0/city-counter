@@ -14,12 +14,12 @@ func TestCache(t *testing.T) {
 	cache, err := NewRedisCache(ctx, "localhost:6379", "", 0)
 	fmt.Println(err == nil, err)
 
-	err = cache.Insert(ctx, "1", "2")
+	err = cache.Insert(ctx, "1", 2)
 	fmt.Println(err == nil, err)
 
 	val, err := cache.Get(ctx, "1")
 	fmt.Println(err == nil, err)
-	fmt.Println(val == "2", val)
+	fmt.Println(val == 2, val)
 
 	stCMD := cache.cache.FlushAll(ctx)
 	fmt.Println(stCMD.Result())
